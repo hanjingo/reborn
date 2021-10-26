@@ -46,32 +46,32 @@ if [ ${CPP} ]; then
     clang++ --version
     update-alternatives --display clang
 
-    # 安装cmake-3.19.2
-    if [ ! ${CMAKE_DIR} ]; then
-        if [ ! -f cmake-3.19.2-Linux-x86_64.sh ];then
-	        wget https://github.com/Kitware/CMake/releases/download/v3.19.2/cmake-3.19.2-Linux-x86_64.sh
-        fi
-        sudo bash cmake-3.19.2-Linux-x86_64.sh --prefix=/usr/local --include-subdir --skip-license
-
-        CMAKE_DIR="/usr/local/cmake-3.19.2-Linux-x86_64"
-        export PATH=${CMAKE_DIR}/bin:$PATH
-        echo -e '\nCMAKE_DIR=/usr/local/cmake-3.19.2-Linux-x86_64\nexport PATH=${CMAKE_DIR}/bin:$PATH' >> ~/.bashrc
-        cmake --version
+    # 安装cmake
+    if [ ! -f ${CMAKE_FILE} ]; then
+	    wget -c ${CMAKE_FILE_URL}
     fi
+    sudo sh ${CMAKE_FILE} --prefix=/usr/local --include-subdir --skip-license
+    if [ ! $(which cmake) ]; then
+        echo -e "\nCMAKE_DIR=${CMAKE_DIR}" >> ~/.bashrc
+        echo -e '\nexport PATH=${CMAKE_DIR}/bin:$PATH' >> ~/.bashrc
+    fi
+    cmake --version
 
-    # 安装boost-1.75.0
+    # 安装boost
     if [ ! ${BOOST_ROOT} ]; then
-        export BOOST_ROOT="/usr/local/boost-1.75"
-        echo -e '\nexport BOOST_ROOT=/usr/local/boost-1.75' >> ~/.bashrc
-        sudo mkdir -p ${BOOST_ROOT}
-        if [ ! -f boost_1_75_0.tar.bz2 ];then
-	        wget -c https://boostorg.jfrog.io/artifactory/main/release/1.75.0/source/boost_1_75_0.tar.bz2
-        fi
-        tar -xjf boost_1_75_0.tar.bz2
-        cd boost_1_75_0
-        ./bootstrap.sh --with-toolset=clang --prefix=${BOOST_ROOT}
-        sudo ./b2 toolset=clang --without-graph_parallel --without-mpi -q -j $(nproc) install
+        export BOOST_ROOT="/usr/local/boost"
+        echo -e  "\nexport BOOST_ROOT=${BOOST_ROOT}" >> ~/.bashrc
     fi
+    if [ ! -d ${BOOST_ROOT} ]; then
+         sudo mkdir -p ${BOOST_ROOT}
+    fi
+    if [ ! -f ${BOOST_FILE} ];then
+	    wget -c ${BOOST_FILE_URL}
+    fi
+    tar -xjf ${BOOST_FILE}
+    cd ${BOOST_VERSION} 
+    ./bootstrap.sh --with-toolset=clang --prefix=${BOOST_ROOT}
+    sudo ./b2 toolset=clang --without-graph_parallel --without-mpi -q -j $(nproc) install
 
 fi
 # --------------------------------------------------------
@@ -82,12 +82,11 @@ if [ ${GO} ]; then
 
     cd ${TMP}
     # 下载二进制文件
-    if [ ! -f go1.17.2.linux-amd64.tar.gz ]; then
-        wget -c https://golang.org/dl/go1.17.2.linux-amd64.tar.gz
+    if [ ! -f ${GO_FILE} ]; then
+        wget -c ${GO_FILE_URL}
     fi
-    if [ ! -d go1.17.2.linux-amd64 ]; then
-        tar -zxvf go1.17.2.linux-amd64.tar.gz
-    fi
+    tar -zxvf ${GO_FILE} 
+
     if [ -d /usr/local/go ]; then
         sudo mv /usr/local/go /usr/local/go.bak
     fi
@@ -122,7 +121,7 @@ if [ ${VIM} == "y" ]; then
 
     # 拉取vim项目
     if [ ! -d "${TMP}/vim" ]; then
-    git clone https://github.com/vim/vim.git
+        git clone ${VIM_GIT}
     fi
     cd vim
 

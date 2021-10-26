@@ -3,11 +3,11 @@
 cd ${TMP} 
 
 # 配置别名
-if [ ${CFG_ALIAS} ]; then
+if [ ${ALIAS_CFG} ]; then
     if [ -f ~/.aliases ]; then
         mv ~/.aliases ~/.aliases.bak
     fi
-    curl https://raw.githubusercontent.com/hanjingo/reborn/main/.aliases >> ${TMP}/.aliases
+    curl ${ALIAS_FILE_URL} >> ${TMP}/.aliases
     cp -f ${TMP}/.aliases ~/
     if [ ! ${aliases} ]; then
         echo -e "\naliases=y" >> ~/.bashrc
@@ -17,11 +17,11 @@ if [ ${CFG_ALIAS} ]; then
 fi
 
 # 配置ctags
-if [ ${CFG_CTAGS} ]; then
+if [ ${CTAGS_CFG} ]; then
     if [ -f ~/.ctags ]; then
         mv ~/.ctags ~/.ctags.bak
     fi
-    curl https://raw.githubusercontent.com/hanjingo/reborn/main/.ctags >> ${TMP}/.ctags
+    curl ${CTAGS_FILE_URL} >> ${TMP}/.ctags
     cp -f ${TMP}/.ctags ~/
 
     if [ ! ${CTAGS} ]; then
@@ -30,12 +30,12 @@ if [ ${CFG_CTAGS} ]; then
 fi
 
 # 配置vim
-if [ ${CFG_VIM} ]; then
+if [ ${VIM_CFG} ]; then
 
     if [ -f ~/.vimrc ]; then
         mv ~/.vimrc ~/.vimrc.bak
     fi
-    curl https://raw.githubusercontent.com/hanjingo/reborn/main/.vimrc >> ${TMP}/.vimrc
+    curl ${VIM_RC} >> ${TMP}/.vimrc
     cp -f ${TMP}/.vimrc ~/
 
     if [ -d ~/.vim ]; then
@@ -47,20 +47,20 @@ if [ ${CFG_VIM} ]; then
 
     # 添加vundle插件
     cd ~/.vim/bundle
-    git clone git@github.com:VundleVim/Vundle.vim.git
+    git clone ${VIM_VUNDLE_GIT}
     cd Vundle.vim
     git submodule update --recursive --init
 
     # 添加vim-code-dark插件
     cd ~/.vim/bundle
-    git clone git@github.com:tomasiser/vim-code-dark.git
+    git clone ${VIM_CODE_DARK_GIT}
     if [ -f ~/.vim/bundle/colors/codedark.vim ]; then
         cp ~/.vim/bundle/colors/codedark.vim ~/.vim/colors/
     fi
    
     # 添加YouCompleteMe插件
     cd ~/.vim/bundle
-    git clone git@github.com:ycm-core/YouCompleteMe.git
+    git clone ${VIM_YCM_GIT}
     if [ ${BUILD_YCM} ]; then # 编译YCM
         if [ -d ~/.vim/bundle/YouCompleteMe ]; then
             cd ~/.vim/bundle/YouCompleteMe
