@@ -5,19 +5,16 @@ export ARCH=amd64 # CPU架构(amd64/arm64...)
 export OS=linux   # 操作系统(linux/macosx/windows)
 
 # 创建临时环境
-export TMP=~/tmp
-if [ -d ${TMP} ]; then
-    sudo rm -rf ${TMP}
+export TMP=/usr/local/src
+if [ ! -d ${TMP} ]; then
+    mkdir -p ${TMP}
 fi
-mkdir -p ${TMP}
-
-# ---------------------------------------------------
-export BASE_APP=y # 安装基本软件
-export CLASH=y    # 安装clash(翻墙工具)
 
 # --------------------基本配置 --------------------------
-export CFG_SSH_SERV=y # 配置ssh服务器
-export CFG_GIT=y      # 配置git
+export BASE_APP=y # 安装基本软件
+
+#export CFG_SSH_SERV=y # 配置ssh服务器
+#export CFG_GIT=y      # 配置git
 export CFG_GOPROXY=y  # 配置go的国内代理
 
 # -------------------------------------------------------
@@ -81,6 +78,16 @@ if [ ${VIM} ]; then
 fi
 
 # -------------------------------------------------------
+
+# -----------------------第三方软件  ----------------------------
+export CLASH=y    # 安装clash(翻墙工具)
+
+# export FRPS=y  # 安装frp服务器
+# export FRPC=y # 安装frp客户端
+export FRP_GIT="git@github.com:fatedier/frp.git" # frp git地址
+
+# -------------------------------------------------------
+
 cd ${TMP}
 
 # 执行基本软件安装脚本

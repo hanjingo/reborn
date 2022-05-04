@@ -88,16 +88,16 @@ function __df_git_submodule_delete() {
 
 # ---------------------------绑定别名 l----------------
 # 示例：ls
-alias ls="ls --show-control-chars --color=auto -A"
+alias ls="ls --show-control-chars -A"
 
 # 示例：l
-alias l='ls --show-control-chars --color=auto -Ah'
+alias l='ls --show-control-chars -Ah'
 
 # 示例：ll
-alias ll='ls --show-control-chars --color=auto -lAh'
+alias ll='ls --show-control-chars -lAh'
 
 # 示例：lll
-alias lll='ls --show-control-chars --color=auto -lA'
+alias lll='ls --show-control-chars -lA'
 # --------------------------------------------------------
 
 
@@ -118,7 +118,7 @@ alias sb='source ~/.bashrc'
 alias sbg='source /etc/profile'
 
 # 登陆工作服务器
-alias sh1='ssh ubuntu@139.198.126.182'
+alias sh1='ssh ubuntu@192.168.10.106'
 alias sh2='ssh root@47.91.215.29'
 # --------------------------------------------------------
 
