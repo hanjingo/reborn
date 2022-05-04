@@ -98,12 +98,14 @@ fi
 if [ ${CFG_GIT} ]; then
     echo "\nplease input the github(or other) email:"
     read email
-    ssh-keygen -t rsa -C "${email}"
 
     echo "\nplease input the github(or other) user name:"
     read uname
+    
     git config --global user.name "${uname}"
     git config --global user.email "${email}"
+        
+    ssh-keygen -t rsa -C "${email}"
 fi
 
 # 配置ssh服务器

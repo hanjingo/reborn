@@ -5,16 +5,18 @@ export ARCH=amd64 # CPU架构(amd64/arm64...)
 export OS=linux   # 操作系统(linux/macosx/windows)
 
 # 创建临时环境
-export TMP=/usr/local/src
-if [ ! -d ${TMP} ]; then
+export TMP=~/tmp
+if [ -d ${TMP} ]; then
     mkdir -p ${TMP}
 fi
 
 # --------------------基本配置 --------------------------
 export BASE_APP=y # 安装基本软件
 
-#export CFG_SSH_SERV=y # 配置ssh服务器
-#export CFG_GIT=y      # 配置git
+export CFG_SSH_SERV=y # 配置ssh服务器
+if [ ! -f ~/.ssh/id_rsa ]; then
+    export CFG_GIT=y  # 配置git
+fi
 export CFG_GOPROXY=y  # 配置go的国内代理
 
 # -------------------------------------------------------
@@ -63,9 +65,9 @@ if [ ${VIM} ]; then
     export VIM_CFG=y
     export VIM_RC="https://raw.githubusercontent.com/hanjingo/reborn/main/.vimrc" # vim配置文件
     export VIM_GIT="https://github.com/vim/vim.git" # vim git地址
-    export VIM_VUNDLE_GIT="git@github.com:VundleVim/Vundle.vim.git" # vim Vundle git地址
-    export VIM_CODE_DARK_GIT="git@github.com:tomasiser/vim-code-dark.git" # vim 暗黑主题 git地址
-    export VIM_YCM_GIT="git@github.com:ycm-core/YouCompleteMe.git" # vim YouCompleteMe git地址
+    export VIM_VUNDLE_GIT="https://github.com/VundleVim/Vundle.vim.git" # vim Vundle git地址
+    export VIM_CODE_DARK_GIT="https://github.com/tomasiser/vim-code-dark.git" # vim 暗黑主题 git地址
+    export VIM_YCM_GIT="https://github.com/ycm-core/YouCompleteMe.git" # vim YouCompleteMe git地址
 
     # 编译YouCompleteMe插件
     export BUILD_YCM=y 
@@ -82,9 +84,9 @@ fi
 # -----------------------第三方软件  ----------------------------
 export CLASH=y    # 安装clash(翻墙工具)
 
-# export FRPS=y  # 安装frp服务器
-# export FRPC=y # 安装frp客户端
-export FRP_GIT="git@github.com:fatedier/frp.git" # frp git地址
+# export FRPS=y   # 安装frp服务器
+# export FRPC=y   # 安装frp客户端
+export FRP_GIT="https://github.com/fatedier/frp.git" # frp git地址
 
 # -------------------------------------------------------
 
