@@ -30,6 +30,8 @@ set number
 
 " 自动换行
 set wrap
+set linebreak
+set wrapmargin=1
 
 " 语法高亮
 set syntax=on
@@ -43,6 +45,17 @@ set enc=utf-8
 
 " 中文
 set langmenu=zh_CN.UTF-8
+
+" 拼写检查
+set nospell
+set spelllang=en_us
+autocmd FileType markdown,txt,gitcommit setlocal spell   " 只在markdown、txt、gitcommit文件中启用拼写检查
+
+" 自动补全限制
+set completeopt=menu,menuone,noselect
+
+" 空闲等待时间
+set updatetime=300
 
 " 搜索模式忽略大小写
 set ignorecase
@@ -70,13 +83,20 @@ set autochdir
 set clipboard+=unnamed
 
 " 不要备份(慎重考虑)
-set nobackup
+"set nobackup
+
+" 不要交换文件(慎重考虑)
+"set noswapfile
 
 " 处理未保存或只读文件时,弹出确认
 set confirm
 
 " 使用鼠标
 set mouse=a
+
+" 安静模式
+set noerrorbells " 出错时，别发声
+set visualbell   " 出错时，屏幕闪烁
 " --------------------------------------------------------------
 
 
@@ -123,9 +143,9 @@ noremap <F3> :bot term ++rows=20 <cr>
 autocmd BufNewFile *.h,*.hpp exec ":call SetTitle()"
 func SetTitle()
     call setline(1, "/*************************************************************************") 
-    call append(line("."), "* Copyright (C) ".strftime("%Y") ." ==HE HAN JING== All rights reserved.")
+    call append(line("."), "* Copyright (C) ".strftime("%Y") ." ==HE HANJING== All rights reserved.")
     call append(line(".")+1, "* File Name: ".expand("%")) 
-    call append(line(".")+2, "* Author: HeHanJing") 
+    call append(line(".")+2, "* Author: HE HANJING") 
     call append(line(".")+3, "* Mail: hehehunanchina@live.com ") 
     call append(line(".")+4, "* Created Time: ".strftime("%c")) 
     call append(line(".")+5, "************************************************************************/") 
@@ -141,7 +161,8 @@ endfunc
 
 
 " 状态栏配置
-set laststatus=2 " 1：不显示状态行；1：仅当窗口多于一个时，显示状态行；2：总是显示状态行
+set laststatus=2 " 0：不显示状态行；1：仅当窗口多于一个时，显示状态行；2：总是显示状态行
+
 " 设置状态行格式: 
 "   %F 完整路径
 "   %m 如果缓冲区已修改则标识为[+]
@@ -151,31 +172,49 @@ set laststatus=2 " 1：不显示状态行；1：仅当窗口多于一个时，�
 "   %l 行号
 "   %v 列号
 "   %p 文件所在行的百分比
-set statusline=%F%m%r%h%w\ pos(%l/%L,%v)\ %p%%\ %{strftime(\"%H:%M:%S\")}
+set statusline=%F%m%r%h%w\ pos(%l/%L,%v)%p%%\ %{strftime(\"%H:%M:%S\")}
+
+" 每秒刷新状态栏（更新时间）
+if has('timers')
+    function! StatusLineTimer(timer)
+        execute 'let &stl=&stl'
+    endfunction
+    let timer = timer_start(1000, 'StatusLineTimer', {'repeat': -1})
+endif
 
 
 " 光标始终保持屏幕中间
-if !exists('g:rc_always_center')
-    let g:rc_always_center = 1
-else
-    if g:rc_always_center == 0 | augroup! rc_always_center | endif
-endif
+"if !exists('g:rc_always_center')
+"    let g:rc_always_center = 1
+"else
+"    if g:rc_always_center == 0 | augroup! rc_always_center | endif
+"endif
 
-augroup rc_always_center
-    autocmd!
-    autocmd VimEnter,WinEnter,VimResized * call RCAlwaysCenterOrNot()
-augroup END
+"augroup rc_always_center
+"    autocmd!
+"    autocmd VimEnter,WinEnter,VimResized * call RCAlwaysCenterOrNot()
+"augroup END
 
-function! RCAlwaysCenterOrNot()
-    if g:rc_always_center
-        let &scrolloff = float2nr(floor(winheight(0) / 2) + 1)
-        inoremap <CR> <CR><C-o>zz
-    else
-        let &scrolloff = 0
-        silent! iunmap <CR>
-    endif
-endfunction
+"function! RCAlwaysCenterOrNot()
+"    if g:rc_always_center
+"        let &scrolloff = float2nr(floor(winheight(0) / 2) + 1)
+"        inoremap <CR> <CR><C-o>zz
+"    else
+"        let &scrolloff = 0
+"        silent! iunmap <CR>
+"    endif
+"endfunction
 
+
+" 打开URL
+"if has('macunix')
+"  let g:open_browser_cmd = 'open'
+"elseif has('unix')
+"  let g:open_browser_cmd = 'xdg-open'
+"elseif has('win32')
+"  let g:open_browser_cmd = 'start'
+"endif
+"nnoremap <leader>ob :execute '!' . g:open_browser_cmd . ' ' . expand('<cfile>')<CR>
 " --------------------------------------------------------------
 
 
@@ -194,10 +233,13 @@ Plugin 'Xuyuanp/nerdtree-git-plugin'     " 文件浏览器git支持
 Plugin 'Valloric/YouCompleteMe'          " 自动补全插件
 Plugin 'tomasiser/vim-code-dark'         " vscode主题
 Plugin 'dhruvasagar/vim-table-mode'      " markdown style format
-Plugin 'iamcco/markdown-preview.vim'     " markdown预览插件
+Plugin 'iamcco/markdown-preview.nvim'    " markdown预览插件
 Plugin 'iamcco/mathjax-support-for-mkdp' " markdown数学公式预览插件
 Plugin 'junegunn/fzf'                    " 模糊搜索插件
 Plugin 'junegunn/fzf.vim'
+Plugin 'github/copilot.vim'              " github copilot插件
+Plugin 'rhysd/vim-clang-format'          " clang格式化插件
+Plugin 'vim-scripts/DrawIt'              " ascii画图插件
 
 call vundle#end()         " required
 filetype plugin indent on " required
@@ -256,6 +298,14 @@ let g:go_highlight_extra_types = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_generate_tags = 1
 let g:godef_split=2
+" --------------------------------------------------------------
+"  vim-rust 插件
+
+syntax enable                     " 打开语法高亮
+filetype plugin indent on         " 启动文件类型插件、缩进和语法高亮功能
+
+let g:rustfmt_autosave = 1        " 保存时自动格式化
+let g:rustfmt_command = "rustfmt" " 自定义格式化命令
 " --------------------------------------------------------------
 " NERDTree设置 F10
 
@@ -327,6 +377,10 @@ let g:mkdp_auto_close=1
 " 网络中的其他计算机也能访问预览页面
 let g:mkdp_open_to_the_world=1
 
+" 固定IP和端口号,默认随机
+let g:mkdp_open_ip='127.0.0.1'
+let g:mkdp_open_port='443'
+
 " 普通模式-打开/关闭预览
 nmap <silent> <F8> <Plug>MarkdownPreview 
 nmap <silent> <F4> <Plug>StopMarkdownPreview 
@@ -355,4 +409,61 @@ inoreabbrev <expr> __
           \ <SID>isAtStartOfLine('__') ?
           \ '<c-o>:silent! TableModeDisable<cr>' : '__'
 " --------------------------------------------------------------
+"  github copilot插件
 
+
+" --------------------------------------------------------------
+" clang格式化插件
+
+" 禁用默认 <Tab> 映射（避免和补全冲突）
+let g:copilot_no_tab_map = v:true
+
+" 延迟弹出提示
+let g:copilot_idle_delay = 500
+
+" 禁用自动弹出提示（推荐不禁用）
+" let g:copilot_enabled = v:false
+
+" 用 Tab 接受 Copilot 建议
+imap <silent><expr> <Tab> copilot#Accept("\<Tab>")
+
+" 切换copilot方案
+imap <C-j> <Plug>(copilot-next)
+imap <C-k> <Plug>(copilot-previous)
+
+" 手动开启 / 关闭 Copilot
+nnoremap <leader>ce :Copilot enable<CR>
+nnoremap <leader>cd :Copilot disable<CR>
+
+" 开启 / 关闭 panel窗口
+nnoremap <leader>cp :Copilot panel<CR>
+autocmd FileType copilot-panel nnoremap <buffer> q :q<CR>
+
+" 固定panel窗口在右侧并设置宽度
+autocmd BufWinEnter copilot://* wincmd L | vertical resize 80
+
+" 禁止panel抢焦点
+autocmd FileType copilot-panel setlocal nobuflisted
+
+" 设置提示的颜色(深色主题：#555555 / #666666，浅色主题：#aaaaaa / #999999)
+highlight CopilotSuggestion guifg=#999999 ctermfg=8
+
+" 限定文件类型
+let g:copilot_filetypes = {
+      \ 'c': v:true,
+      \ 'cpp': v:true,
+      \ 'go': v:true,
+      \ 'rust': v:true,
+      \ 'python': v:true,
+      \ }
+" --------------------------------------------------------------
+" DrawIt
+
+" 使用方法:
+"   \di  启动DrawIt模式
+"   \ds  停止DrawIt模式
+"   方向键绘制线条, 空格擦除, v进入可视模式框选区域
+"   箭头: >, <, ^, v
+"   拐角: +
+"   交叉: +
+" --------------------------------------------------------------
